@@ -6,56 +6,47 @@
 using namespace std;
 
 namespace run_length_encoding {
-   string encode(string phrase){
-        vector<char> characters;
-        vector<char> coded;
-        for(long unsigned int i = 0; i < phrase.size(); ++i){
-            characters.push_back(phrase[i]);
-        }
-        
-        
-        char temp;
-        int counter = 0;
-  			vector<int> counter2;
-        long unsigned int j = 0;
-  			long unsigned int i = 0;
-        while(j < characters.size()){
-            temp = characters[j];
-            for(i = j; i <= characters.size(); ++i){
-                if(characters[i] == temp){
-                    counter++;
-                  	counter2.push_back(counter);
-                }else{
-                    j = i;
-                    break;
-                }
-            }
-            char counterChar = counter + '0';
-            coded.push_back(counterChar);
-            coded.push_back(temp);
-          	if(counter2.size() >= characters.size()){
-              break;
-            }
-            counter = 0;
-        }
-        
-        
-        coded.erase(remove(coded.begin(), coded.end(), '1'), coded.end()); 
-        
-        for(long unsigned int i = 0; i < coded.size(); ++i){
-            cout <<coded[i];
-        }
-        cout << endl;
-        
-        string codedString;
-        
-        for(long unsigned int i = 0; i < coded.size(); ++i){
-            codedString += coded[i];
-        }
-        
-        cout << "Coded String Is: " << codedString << endl;
-        return codedString;
-    }
+   string encode(string input) {
+       string final_output = "";
+       if (input.size() == 0) {
+           return "";
+       } else {
+           if (input.size() == 1) {
+               return input;
+           } else {
+               int current_index = 0;
+               int next_index = 1;
+               char current_char = input[current_index];
+               char next_char = input[next_index];
+               int same_char_counter = 1;
+               while (next_index <= input.size() -1) {
+                   if (input[current_index] == input[next_index]) {
+                       same_char_counter = same_char_counter + 1;
+                       current_index = current_index + 1;
+                       next_index = next_index + 1;
+                   } else {
+                       string counter_to_char = to_string(same_char_counter);
+                       if (same_char_counter > 1) {
+                           final_output = final_output + counter_to_char + input[current_index];
+                       } else {
+                           final_output = final_output + input[current_index];
+                       }
+                       same_char_counter = 1;
+                       current_index = current_index + 1;
+                       next_index = next_index + 1;
+                   }
+               }
+               string counter_to_char = to_string(same_char_counter);
+               if (same_char_counter > 1) {
+                   final_output = final_output + counter_to_char + input[current_index];
+               } else {
+                   final_output = final_output + input[current_index];
+               }
+           }
+       }
+       
+       return final_output;
+   }
 
     string decode(string code){
         vector<char> codeVector;
