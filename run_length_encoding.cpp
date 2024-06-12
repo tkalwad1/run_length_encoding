@@ -14,11 +14,9 @@ namespace run_length_encoding {
            if (input.size() == 1) {
                return input;
            } else {
-               int current_index = 0;
-               int next_index = 1;
-               char current_char = input[current_index];
-               char next_char = input[next_index];
-               int same_char_counter = 1;
+               long unsigned int current_index = 0;
+               long unsigned int next_index = 1;
+               long unsigned int same_char_counter = 1;
                while (next_index <= input.size() -1) {
                    if (input[current_index] == input[next_index]) {
                        same_char_counter = same_char_counter + 1;
@@ -48,53 +46,37 @@ namespace run_length_encoding {
        return final_output;
    }
 
-    string decode(string code){
-        vector<char> codeVector;
-        vector<char> decodedVector;
-
-        for(long unsigned int i = 0; i < code.size(); ++i){
-            codeVector.push_back(code[i]);
+    string decode(string input) {
+        if (input == "") {
+            return "";
         }
-
-        long unsigned int j = 0; 
-        int multiple;
-        int counter = 0;
-        int counter2 = 0;
-
-        if(codeVector[0] < 48 || codeVector[0] > 57){
-            decodedVector.push_back(codeVector[0]);
-        }
-        while(j < codeVector.size()){
-            //handles single digit numbers
-            if(codeVector[j] >= 48 && codeVector[j] <= 57 && !(codeVector[j + 1] >= 48 && codeVector[j + 1] <= 57)){
-                multiple = codeVector[j] - '0';
-                while(counter < multiple){
-                    decodedVector.push_back(codeVector[j + 1]);
-                    counter++;
+        
+        bool has_integers = false;
+        string output = "";
+        string integer_value = "";
+        for (unsigned long int i = 0; i < input.size(); i++) {
+            char current_char = input[i];
+            if (current_char >= '0' && current_char <= '9') {
+                has_integers = true;
+                integer_value = integer_value + current_char;
+                continue;
+            }
+            
+            if (has_integers) {
+                int no_of_chars = stoi(integer_value);
+                for (int i=0; i<no_of_chars; i++) {
+                    output = output + current_char;
                 }
-                counter = 0;
+                integer_value = "";
+                has_integers = false;
+                no_of_chars = 0;
+            } else {
+                output = output + current_char;
             }
-            //handles double digit 
-            if(codeVector[j] >= 48 && codeVector[j] <= 57 && codeVector[j + 1] >= 48 && codeVector[j + 1] <= 57){
-                multiple = (codeVector[j] - '0') * 10 + (codeVector[j + 1] - '0');
-                while(counter2 < multiple){
-                    decodedVector.push_back(codeVector[j + 2]);
-                    counter2++;
-                }
-                break;
-                counter2 = 0;
-            }
-            //handles single letter
-            if((codeVector[j] < 48 || codeVector[j] > 57) && (codeVector[j + 1] < 48 || codeVector[j + 1] > 57) && (j != 0)){
-                decodedVector.push_back(codeVector[j]);
-            }
-            ++j;
         }
-        string decodedString;
-        for(long unsigned int i = 0; i < decodedVector.size(); ++i){
-            decodedString += decodedVector[i];
-        }
-
-        return decodedString;
+        
+        cout << "f output = " << output << endl;
+        return output;
+        
     }
 }  // namespace run_length_encoding
